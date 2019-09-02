@@ -1,0 +1,49 @@
+<section class="phx-hero">
+  <h1><%= gettext "Welcome to %{name}!", name: "AGOT ELO Project" %></h1>
+  <p>Because ELO is the best way to know that you're better than other people</p>
+</section>
+
+<section class="row">
+  <article class="column">
+    <h2>Top Players</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for player <- @players do %>
+          <tr>
+            <td><a href="/players/<%= player.id %>"><%= player.name %></a></td>
+            <td><%= round(player.rating) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+  </article>
+  <article class="column">
+    <h2>Top Decks (last 90 days)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Faction</th>
+          <th>Agenda</th>
+          <th>Win %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for deck <- @decks do %>
+          <tr>
+            <td><%= deck.faction %></td>
+            <td><%= deck.agenda %></td>
+            <td><%= deck.ninety_percent %></td>
+            <td><%= deck.ninety_played %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </article>
+</section>
