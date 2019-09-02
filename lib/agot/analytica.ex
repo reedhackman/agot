@@ -12,7 +12,7 @@ defmodule Agot.Analytica do
   end
 
   def update_single_deck_three_months(faction, agenda) do
-    games = Games.list_games_for_deck_interval(faction, agenda, 90)
+    games = Games.list_games_for_deck_last_n(faction, agenda, 90)
     wins =
       games
       |> Enum.count(fn x -> x.winner_faction == faction and x.winner_agenda == agenda end)

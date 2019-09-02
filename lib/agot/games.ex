@@ -31,7 +31,15 @@ defmodule Agot.Games do
     |> Repo.insert()
   end
 
-  def list_games_for_deck_interval(faction, agenda, days) do
+  def list_games_for_interval(start_date, end_date) do
+    query =
+      from game in Game,
+        where: game.date >= ^start_date and game.date <= ^end_date
+
+    Repo.all(query)
+  end
+
+  def list_games_for_deck_last_n(faction, agenda, days) do
     query =
       from game in Game,
       where: ((game.winner_faction == ^faction and game.winner_agenda == ^agenda)

@@ -31,5 +31,6 @@ defmodule AgotWeb.Router do
 
     get "/players", ApiController, :all_players
     get "/players/:id", ApiController, :specific_player
+    get "/games/:start/:end", ApiController, :games_over_range
   end
 end
