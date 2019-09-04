@@ -11,7 +11,7 @@ defmodule Agot.Tjp do
 
   def init(state) do
     IO.inspect("SPINNING UP")
-    check_tjp()
+    Process.send_after(self(), :joust, 1)
     {:ok, state}
   end
 
