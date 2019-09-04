@@ -10,7 +10,7 @@ defmodule Agot.Tjp do
   end
 
   def init(state) do
-    Process.send_after(self(), :joust, 1)
+    Process.send_after(self(), :joust, 1000 * 60 * 60 * 10)
     IO.puts("STARTING IN TEN MINUTES")
     {:ok, state}
   end
