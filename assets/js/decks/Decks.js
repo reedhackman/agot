@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRoutes } from "hookrouter";
-import Faction from "./Faction";
-import Agenda from "./Agenda";
-import Table from "./Table";
+import Faction from "./DecksFaction";
+import Agenda from "./DecksAgenda";
+import Table from "./DecksTable";
 const moment = require("moment");
 
 const Decks = props => {
@@ -32,13 +32,21 @@ const Decks = props => {
   const routes = {
     "/decks": () => <Table min={min} games={games} />,
     "/decks/:faction": ({ faction }) => (
-      <Faction min={min} games={games} faction={faction} />
+      <Faction
+        min={min}
+        games={games}
+        faction={faction.replace(/%20/g, " ").replace(/%22/g, '"')}
+      />
     ),
     "/decks/:faction/:agenda": ({ faction, agenda }) => (
-      <Agenda min={min} games={games} faction={faction} agenda={agenda} />
+      <Agenda
+        min={min}
+        games={games}
+        faction={faction.replace(/%20/g, " ").replace(/%22/g, '"')}
+        agenda={agenda.replace(/%20/g, " ").replace(/%22/g, '"')}
+      />
     )
   };
-  console.log(games);
   const routeResult = useRoutes(routes);
   return (
     <div>

@@ -37,8 +37,8 @@
       <tbody>
         <%= for deck <- @decks do %>
           <tr>
-            <td><%= deck.faction %></td>
-            <td><%= deck.agenda %></td>
+            <td><a href="/decks/<%= deck.faction %>"><%= deck.faction %></a></td>
+            <td><a href="/decks/<%= deck.faction %>/<%= deck.agenda %>"><%= deck.agenda %></a></td>
             <td><%= deck.ninety_percent %></td>
             <td><%= deck.ninety_played %></td>
           </tr>

@@ -17,7 +17,7 @@
             <li><a href="/faq">F.A.Q.</a></li>
           </ul>
         </nav>
-        <div>AGOT Fighting Pits</div>
+        <div><a href="/">AGOT Fighting Pits</a></div>
       </section>
     </header>
     <main role="main" class="container">

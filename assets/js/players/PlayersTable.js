@@ -87,7 +87,7 @@ const Table = props => {
         </div>
       )}
       <span>
-        props.state.page {props.state.page} of {props.state.last}
+        Page {props.state.page} of {props.state.last}
       </span>
       {props.state.page === props.state.last ? null : (
         <div
@@ -102,7 +102,7 @@ const Table = props => {
           onClick={() => props.handlePage(props.state.last)}
           className="button-table button-right"
         >
-          props.state.last
+          Last
         </div>
       )}
     </div>
