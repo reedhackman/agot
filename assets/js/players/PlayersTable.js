@@ -55,7 +55,7 @@ const Table = props => {
   for (let i = 0; i < Math.min(k, 20); i++) {
     let player = rows[j];
     list.push(
-      <tr key={player.name} className="table-row">
+      <tr key={player.name} className="player-table-row">
         <td className="players-table-name">
           <A href={`/players/${player.id}`}>{player.name}</A>
         </td>
@@ -150,7 +150,7 @@ const Table = props => {
                   ) : (
                     <i className="la la-sort-alpha-desc"></i>
                   )}
-                  name
+                  Name
                 </div>
               ) : (
                 <div
@@ -158,7 +158,7 @@ const Table = props => {
                   value="name"
                   className="reactButton"
                 >
-                  name
+                  Name
                 </div>
               )}
             </th>

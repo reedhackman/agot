@@ -1,0 +1,62 @@
+.players-table-row {
+}
+.players-table-name {
+  padding-left: 10px;
+  width: 46%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.players-table-percent,
+.players-table-played,
+.players-table-rating {
+  width: 18%;
+  text-align: center;
+}
+tbody tr:hover {
+  background-color: lightgray;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 10px auto;
+  border: 1px solid black;
+  white-space: nowrap;
+  width: 100%;
+  table-layout: fixed;
+}
+
+th {
+  border: 1px solid black;
+  padding: 10px;
+}
+
+td {
+  border: 1px solid black;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.navbuttons {
+}
+.button-table {
+}
+.button-left {
+}
+.button-right {
+}
+.minbox {
+}
+.searchbox {
+}
+.table-wrapper {
+  display: block;
+}
+.table-filter-box {
+}
+.players-table {
+}
+.table-nav-buttons {
+  margin: 10px;
+}
