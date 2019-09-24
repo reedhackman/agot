@@ -10,8 +10,8 @@ defmodule Agot.Tjp do
   end
 
   def init(state) do
-    IO.inspect("SPINNING UP in 10min")
-    Process.send_after(self(), :joust, 1000 * 60 * 10) # 10 minutes
+    IO.inspect("SPINNING UP in 1 min")
+    Process.send_after(self(), :joust, 1000 * 60) # 1 minute
     {:ok, state}
   end
 
