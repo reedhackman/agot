@@ -240,73 +240,58 @@ defmodule Agot.Analytica do
   end
 
   def process_game(game) do
-    if (game.winner.faction !== nil or game.winner.agenda === "The Free Folk") and
-         (game.loser.faction !== nil or game.loser.agenda === "The Free Folk") do
-      winner =
-        case Cache.get_updated_player(game.winner.id) do
-          nil ->
-            Players.get_player(game.winner.id, game.winner.name)
+    winner =
+      case Cache.get_updated_player(game.winner.id) do
+        nil ->
+          Players.get_player(game.winner.id, game.winner.name)
 
-          player ->
-            player
-        end
+        player ->
+          player
+      end
 
-      loser =
-        case Cache.get_updated_player(game.loser.id) do
-          nil ->
-            Players.get_player(game.loser.id, game.loser.name)
+    loser =
+      case Cache.get_updated_player(game.loser.id) do
+        nil ->
+          Players.get_player(game.loser.id, game.loser.name)
 
-          player ->
-            player
-        end
+        player ->
+          player
+      end
 
-      _tournament =
-        case Cache.get_tournament(game.misc.tournament_id) do
-          nil ->
-            tournament = Tournaments.get_tournament(game.misc.tournament_id, game.misc.tournament_name, game.misc.tournament_date)
-            Cache.put_tournament(tournament.id, tournament)
-            tournament
+    _tournament =
+      case Cache.get_tournament(game.misc.tournament_id) do
+        nil ->
+          tournament = Tournaments.get_tournament(game.misc.tournament_id, game.misc.tournament_name, game.misc.tournament_date)
+          Cache.put_tournament(tournament.id, tournament)
+          tournament
 
-          tournament ->
-            tournament
-        end
+        tournament ->
+          tournament
+      end
 
-      rate(winner, loser, game.misc.tournament_date)
-
-      if (game.winner.faction == game.loser.faction and game.winner.agenda == game.loser.agenda) ===
-           false and (game.loser.agenda !== "" and game.winner.agenda !== "") do
-        winner_faction =
-          if game.winner.faction == nil do
-            game.winner.agenda
-          else
-            game.winner.faction
-          end
-        loser_faction =
-          if game.loser.faction == nil do
-            game.loser.agenda
-          else
-            game.loser.faction
-          end
-        Games.create_game(
-          %{
-            winner_faction: winner_faction,
-            winner_agenda: game.winner.agenda,
-            loser_faction: loser_faction,
-            loser_agenda: game.loser.agenda,
-            tournament_id: game.misc.tournament_id,
-            id: game.misc.id,
-            date: game.misc.tournament_date
-          },
-          game.winner.id,
-          game.loser.id,
-          game.misc.tournament_id
-        )
-
+    case Games.create_game(
+      %{
+        winner_faction: game.winner.faction,
+        winner_agenda: game.winner.agenda,
+        loser_faction: game.loser.faction,
+        loser_agenda: game.loser.agenda,
+        tournament_id: game.misc.tournament_id,
+        id: game.misc.id,
+        date: game.misc.tournament_date
+      },
+      game.winner.id,
+      game.loser.id,
+      game.misc.tournament_id
+    ) do
+      nil -> nil
+      new_game ->
+        rate(winner, loser, game.misc.tournament_date)
+        if is_nil(new_game.winner_faction) === false and is_nil(new_game.loser_faction) and new_game.winner_faction !== "" and new_game.loser_faction !== "" do
         process_decks_and(
-          winner_faction,
-          game.winner.agenda,
-          loser_faction,
-          game.loser.agenda
+          new_game.winner_faction,
+          new_game.winner_agenda,
+          new_game.loser_faction,
+          new_game.loser_agenda
         )
       end
     end
