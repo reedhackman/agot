@@ -4,7 +4,7 @@ import { A } from "hookrouter";
 const Opponents = props => {
   const [sortBy, setSortBy] = useState("played");
   const [asc, setAsc] = useState(false);
-  const [showing, setShowing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const handleSort = e => {
     if (sortBy === e) {
       setAsc(!asc);
@@ -19,8 +19,10 @@ const Opponents = props => {
       id: opponent,
       name: props.opponents[opponent].name,
       percent:
-        props.opponents[opponent].wins /
-        (props.opponents[opponent].wins + props.opponents[opponent].losses),
+        Math.round(
+          (1000 * props.opponents[opponent].wins) /
+            (props.opponents[opponent].wins + props.opponents[opponent].losses)
+        ) / 10,
       played: props.opponents[opponent].losses + props.opponents[opponent].wins,
       wins: props.opponents[opponent].wins,
       losses: props.opponents[opponent].losses
@@ -40,32 +42,85 @@ const Opponents = props => {
     }
   });
   let rows = [];
-  opponents.forEach(opponent => {
-    rows.push(
-      <tr key={opponent.id}>
-        <td>
-          <A href={`/players/${opponent.id}`}>{opponent.name}</A>
-        </td>
-        <td>{opponent.played}</td>
-        <td>{opponent.percent}</td>
-      </tr>
-    );
-  });
+  if (!expanded) {
+    for (var i = 0; i < Math.min(5, opponents.length); i++) {
+      rows.push(
+        <tr key={opponents[i].id}>
+          <td>
+            <div className="PlayersSpecificOpponents-Name">
+              <A href={`/players/${opponents[i].id}`}>{opponents[i].name}</A>
+            </div>
+          </td>
+          <td>
+            <div className="PlayersSpecificOpponents-Number">
+              {opponents[i].played}
+            </div>
+          </td>
+          <td>
+            <div className="PlayersSpecificOpponents-Number">
+              {opponents[i].percent}
+            </div>
+          </td>
+        </tr>
+      );
+    }
+  } else {
+    opponents.forEach(opponent => {
+      rows.push(
+        <tr key={opponent.id}>
+          <td>
+            <div className="PlayersSpecificOpponents-Name">
+              <A href={`/players/${opponent.id}`}>{opponent.name}</A>
+            </div>
+          </td>
+          <td>
+            <div className="PlayersSpecificOpponents-Number">
+              {opponent.played}
+            </div>
+          </td>
+          <td>
+            <div className="PlayersSpecificOpponents-Number">
+              {opponent.percent}
+            </div>
+          </td>
+        </tr>
+      );
+    });
+  }
+
   return (
     <div>
-      <h2 onClick={() => setShowing(!showing)}>Opponents</h2>
-      {showing ? (
-        <table>
-          <thead>
-            <tr>
-              <th onClick={() => handleSort("name")}>Name</th>
-              <th onClick={() => handleSort("played")}>Played</th>
-              <th onClick={() => handleSort("percent")}>Percent</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </table>
-      ) : null}
+      <h2>Opponents</h2>
+      <table>
+        <thead>
+          <tr>
+            <th
+              className="PlayersSpecificOpponents-NameHeader"
+              onClick={() => handleSort("name")}
+            >
+              <div className="PlayersSpecificOpponents-Name">Name</div>
+            </th>
+            <th
+              className="PlayersSpecificOpponents-NumberHeader"
+              onClick={() => handleSort("played")}
+            >
+              <div className="PlayersSpecificOpponents-Number">Played</div>
+            </th>
+            <th
+              className="PlayersSpecificOpponents-NumberHeader"
+              onClick={() => handleSort("percent")}
+            >
+              <div className="PlayersSpecificOpponents-Number">Percent</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <div onClick={() => setExpanded(!expanded)}>
+        {opponents.length >= 5 ? (
+          <div>{expanded ? "collapse" : "expand"}</div>
+        ) : null}
+      </div>
     </div>
   );
 };

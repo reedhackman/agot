@@ -5,12 +5,14 @@
 
 <section class="row">
   <article class="column">
-    <h2>Top Players</h2>
+    <h2>Top Rated Players</h2>
     <table>
       <thead>
         <tr>
           <th>Name</th>
           <th>Rating</th>
+          <th>Games Played</th>
+          <th>Last Played</th>
         </tr>
       </thead>
       <tbody>
@@ -18,12 +20,16 @@
           <tr>
             <td><a href="/players/<%= player.id %>"><%= player.name %></a></td>
             <td><%= round(player.rating) %></td>
+            <td><%= player.num_wins + player.num_losses %></td>
+            <td><%= last_played(player) %></td>
           </tr>
         <% end %>
       </tbody>
     </table>
 
   </article>
+</section>
+<section class="row">
   <article class="column">
     <h2>Top Decks (last 90 days)</h2>
     <table>
@@ -32,6 +38,7 @@
           <th>Faction</th>
           <th>Agenda</th>
           <th>Win %</th>
+          <th># Played</th>
         </tr>
       </thead>
       <tbody>
@@ -39,7 +46,7 @@
           <tr>
             <td><a href="/decks/<%= deck.faction %>"><%= deck.faction %></a></td>
             <td><a href="/decks/<%= deck.faction %>/<%= deck.agenda %>"><%= deck.agenda %></a></td>
-            <td><%= deck.ninety_percent %></td>
+            <td><%= round(1000 *deck.ninety_percent)/10 %></td>
             <td><%= deck.ninety_played %></td>
           </tr>
         <% end %>

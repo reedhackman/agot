@@ -56,8 +56,10 @@ const Table = props => {
           faction: faction,
           agenda: agenda,
           percent:
-            decks[faction][agenda].wins /
-            (decks[faction][agenda].wins + decks[faction][agenda].losses),
+            Math.round(
+              (1000 * decks[faction][agenda].wins) /
+                (decks[faction][agenda].wins + decks[faction][agenda].losses)
+            ) / 10,
           played: decks[faction][agenda].losses + decks[faction][agenda].wins
         });
       }
@@ -81,13 +83,21 @@ const Table = props => {
     rows.push(
       <tr key={deck.faction + deck.agenda}>
         <td>
-          <A href={`/decks/${deck.faction}`}>{deck.faction}</A>
+          <div className="DecksTable-Faction">
+            <A href={`/decks/${deck.faction}`}>{deck.faction}</A>
+          </div>
         </td>
         <td>
-          <A href={`/decks/${deck.faction}/${deck.agenda}`}>{deck.agenda}</A>
+          <div className="DecksTable-Agenda">
+            <A href={`/decks/${deck.faction}/${deck.agenda}`}>{deck.agenda}</A>
+          </div>
         </td>
-        <td>{deck.percent}</td>
-        <td>{deck.played}</td>
+        <td>
+          <div className="DecksTable-Number">{deck.percent}</div>
+        </td>
+        <td>
+          <div className="DecksTable-Number">{deck.played}</div>
+        </td>
       </tr>
     );
   });
@@ -96,10 +106,30 @@ const Table = props => {
       <table>
         <thead>
           <tr>
-            <th onClick={() => handleSort("faction")}>Faction</th>
-            <th onClick={() => handleSort("agenda")}>Agenda</th>
-            <th onClick={() => handleSort("percent")}>Percent</th>
-            <th onClick={() => handleSort("played")}>Played</th>
+            <th
+              className="DecksTable-FactionHeader"
+              onClick={() => handleSort("faction")}
+            >
+              <div className="DecksTable-Faction">Faction</div>
+            </th>
+            <th
+              className="DecksTable-AgendaHeader"
+              onClick={() => handleSort("agenda")}
+            >
+              <div className="DecksTable-Agenda">Agenda</div>
+            </th>
+            <th
+              className="DecksTable-NumberHeader"
+              onClick={() => handleSort("percent")}
+            >
+              <div className="DecksTable-Number">Win %</div>
+            </th>
+            <th
+              className="DecksTable-NumberHeader"
+              onClick={() => handleSort("played")}
+            >
+              <div className="DecksTable-Number"># Played</div>
+            </th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>

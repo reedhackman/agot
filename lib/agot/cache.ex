@@ -7,9 +7,6 @@ defmodule Agot.Cache do
 
   def init(state) do
     :ets.new(:exclude_cache, [:set, :public, :named_table])
-    :ets.new(:updated_players_cache, [:set, :public, :named_table])
-    :ets.new(:updated_decks_cache, [:set, :public, :named_table])
-    :ets.new(:updated_matchups_cache, [:set, :public, :named_table])
     :ets.new(:tournaments_cache, [:set, :public, :named_table])
     {:ok, state}
   end
@@ -20,7 +17,7 @@ defmodule Agot.Cache do
   end
 
   def put_exclude(key, data) do
-    GenServer.cast(AgotCache, {:put_exclude, key, data, :exclude_cache})
+    GenServer.cast(AgotCache, {:put, key, data, :exclude_cache})
   end
 
   # TOURNAMENTS
@@ -30,45 +27,6 @@ defmodule Agot.Cache do
 
   def put_tournament(key, data) do
     GenServer.cast(AgotCache, {:put, key, data, :tournaments_cache})
-  end
-
-  # UPDATED PLAYERS
-  def delete_updated_player(key) do
-    GenServer.cast(AgotCache, {:delete, key, :updated_players_cache})
-  end
-
-  def get_updated_player(key) do
-    GenServer.call(AgotCache, {:get, key, :updated_players_cache})
-  end
-
-  def put_updated_player(key, data) do
-    GenServer.cast(AgotCache, {:put, key, data, :updated_players_cache})
-  end
-
-  # UPDATED DECKS
-  def delete_updated_deck(key) do
-    GenServer.cast(AgotCache, {:delete, key, :updated_decks_cache})
-  end
-
-  def get_updated_deck(key) do
-    GenServer.call(AgotCache, {:get, key, :updated_decks_cache})
-  end
-
-  def put_updated_deck(key, data) do
-    GenServer.cast(AgotCache, {:put, key, data, :updated_decks_cache})
-  end
-
-  # UPDATED MATCHUPS
-  def delete_updated_matchup(key) do
-    GenServer.cast(AgotCache, {:delete, key, :updated_matchups_cache})
-  end
-
-  def get_updated_matchup(key) do
-    GenServer.call(AgotCache, {:get, key, :updated_matchups_cache})
-  end
-
-  def put_updated_matchup(key, data) do
-    GenServer.cast(AgotCache, {:put, key, data, :updated_matchups_cache})
   end
 
   # HANDLERS
@@ -83,11 +41,6 @@ defmodule Agot.Cache do
   end
 
   def handle_cast({:put, key, data, table}, state) do
-    :ets.insert(table, {key, data})
-    {:noreply, state}
-  end
-
-  def handle_cast({:put_exclude, key, data, table}, state) do
     case :ets.lookup(table, key) do
       [] -> :ets.insert(table, {key, data})
       [{_key, _data}] -> nil
