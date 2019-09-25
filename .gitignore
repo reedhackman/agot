@@ -33,6 +33,10 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/
 
-/config/
+config.exs
+dev.exs
+prod.exs
+prod.secret.exs
+test.exs
 test_data.txt
 testing.ex
