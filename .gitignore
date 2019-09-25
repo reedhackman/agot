@@ -34,3 +34,5 @@ npm-debug.log
 /priv/static/
 
 /config/
+test_data.txt
+testing.ex
