@@ -339,12 +339,12 @@ defmodule Agot.Analytica do
     winner_deck = Decks.get_deck(winner_faction, winner_agenda)
     loser_deck = Decks.get_deck(loser_faction, loser_agenda)
 
-    Decks.update_deck(winner_faction, winner_agenda, %{
+    Decks.update_deck(winner_deck, %{
       num_wins: winner_deck.num_wins + 1,
       num_losses: winner_deck.num_losses
     })
 
-    Decks.update_deck(loser_faction, loser_agenda, %{
+    Decks.update_deck(loser_deck, %{
       num_wins: loser_deck.num_wins,
       num_losses: loser_deck.num_losses + 1
     })

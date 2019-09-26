@@ -20,10 +20,12 @@ defmodule Agot.Decks do
   def get_deck(faction, agenda) do
     query =
       from deck in Deck,
-      where: deck.faction == ^faction and deck.agenda == ^agenda
+        where: deck.faction == ^faction and deck.agenda == ^agenda
+
     case Repo.one(query) do
       nil ->
         create_deck(faction, agenda)
+
       deck ->
         deck
     end
@@ -34,7 +36,14 @@ defmodule Agot.Decks do
       %Deck{}
       |> Deck.create_changeset(%{faction: faction, agenda: agenda, num_wins: 0, num_losses: 0})
       |> Repo.insert()
+
     deck
+  end
+
+  def update_deck(deck, attrs) do
+    deck
+    |> Deck.update_changeset(attrs)
+    |> Repo.update()
   end
 
   def update_deck(faction, agenda, attrs) do
@@ -46,7 +55,10 @@ defmodule Agot.Decks do
   def update_ninety(faction, agenda, attrs) do
     if attrs.wins + attrs.losses > 0 do
       Repo.one(from deck in Deck, where: deck.faction == ^faction and deck.agenda == ^agenda)
-      |> Deck.ninety_changeset(%{ninety_played: attrs.wins + attrs.losses, ninety_percent: attrs.wins / (attrs.wins + attrs.losses)})
+      |> Deck.ninety_changeset(%{
+        ninety_played: attrs.wins + attrs.losses,
+        ninety_percent: attrs.wins / (attrs.wins + attrs.losses)
+      })
       |> Repo.update()
     end
   end

@@ -46,7 +46,7 @@
           <tr>
             <td><a href="/decks/<%= deck.faction %>"><%= deck.faction %></a></td>
             <td><a href="/decks/<%= deck.faction %>/<%= deck.agenda %>"><%= deck.agenda %></a></td>
-            <td><%= round(1000 *deck.ninety_percent)/10 %></td>
+            <td><%= round(1000 * deck.ninety_percent)/10 %></td>
             <td><%= deck.ninety_played %></td>
           </tr>
         <% end %>
