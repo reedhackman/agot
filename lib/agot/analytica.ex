@@ -283,7 +283,8 @@ defmodule Agot.Analytica do
         Players.update_player(winner.id, %{
           num_wins: winner.num_wins + 1,
           num_losses: winner.num_losses,
-          ratings_over_time: map
+          ratings_over_time: map,
+          rating: r_w
         })
       else
         map = Map.put(winner.ratings_over_time, date, r_w)
@@ -291,14 +292,16 @@ defmodule Agot.Analytica do
         Players.update_player(winner.id, %{
           num_wins: winner.num_wins + 1,
           num_losses: winner.num_losses,
-          ratings_over_time: map
+          ratings_over_time: map,
+          rating: r_w
         })
       end
     else
       Players.update_player(winner.id, %{
         num_wins: winner.num_wins + 1,
         num_losses: winner.num_losses,
-        ratings_over_time: %{date => r_w}
+        ratings_over_time: %{date => r_w},
+        rating: r_w
       })
     end
 
@@ -309,7 +312,8 @@ defmodule Agot.Analytica do
         Players.update_player(loser.id, %{
           num_wins: loser.num_wins,
           num_losses: loser.num_losses + 1,
-          ratings_over_time: map
+          ratings_over_time: map,
+          rating: r_l
         })
       else
         map = Map.put(loser.ratings_over_time, date, r_l)
@@ -317,14 +321,16 @@ defmodule Agot.Analytica do
         Players.update_player(loser.id, %{
           num_wins: loser.num_wins,
           num_losses: loser.num_losses + 1,
-          ratings_over_time: map
+          ratings_over_time: map,
+          rating: r_l
         })
       end
     else
       Players.update_player(loser.id, %{
         num_wins: loser.num_wins,
         num_losses: loser.num_losses + 1,
-        ratings_over_time: %{date => r_l}
+        ratings_over_time: %{date => r_l},
+        rating: r_l
       })
     end
   end
