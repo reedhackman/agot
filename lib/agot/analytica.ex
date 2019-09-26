@@ -257,7 +257,7 @@ defmodule Agot.Analytica do
       new_game ->
         rate(winner, loser, game.misc.tournament_date)
 
-        if is_nil(new_game.winner_faction) === false and is_nil(new_game.loser_faction) and
+        if is_nil(new_game.winner_faction) === false and is_nil(new_game.loser_faction) === false and
              new_game.winner_faction !== "" and new_game.loser_faction !== "" do
           process_decks(
             new_game.winner_faction,

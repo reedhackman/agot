@@ -11,7 +11,6 @@ defmodule Agot.Decks.Deck do
 
   @required_fields [
     :faction,
-    :agenda,
     :num_wins,
     :num_losses
   ]
