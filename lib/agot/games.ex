@@ -82,6 +82,16 @@ defmodule Agot.Games do
     Repo.all(query)
   end
 
+  def list_games_for_deck(faction, agenda) do
+    query =
+      from game in Game,
+        where:
+          (game.winner_faction == ^faction and game.winner_agenda == ^agenda) or
+            (game.loser_faction == ^faction and game.loser_agenda == ^agenda)
+
+    Repo.all(query)
+  end
+
   def list_games_for_deck_last_n(faction, agenda, days) do
     query =
       from game in Game,

@@ -4,6 +4,7 @@ import { A } from "hookrouter";
 const Table = props => {
   const [sortBy, setSortBy] = useState("percent");
   const [asc, setAsc] = useState(false);
+  const [min, setMin] = useState(20);
   const handleSort = e => {
     if (sortBy === e) {
       setAsc(!asc);
@@ -14,44 +15,70 @@ const Table = props => {
   };
   let decks = {};
   props.games.forEach(game => {
-    if (!decks[game.winner_faction]) {
-      decks[game.winner_faction] = {
-        [game.winner_agenda]: {
-          wins: 1,
-          losses: 0
-        }
-      };
-    } else if (!decks[game.winner_faction][game.winner_agenda]) {
-      decks[game.winner_faction][game.winner_agenda] = {
-        wins: 1,
-        losses: 0
-      };
-    } else {
-      decks[game.winner_faction][game.winner_agenda].wins++;
-    }
-    if (!decks[game.loser_faction]) {
-      decks[game.loser_faction] = {
-        [game.loser_agenda]: {
+    if (
+      game.winner_faction === game.loser_faction &&
+      game.winner_agenda === game.loser_agenda
+    ) {
+      if (!decks[game.winner_faction]) {
+        decks[game.winner_faction] = {
+          [game.winner_agenda]: {
+            wins: 0,
+            losses: 0,
+            played: 2
+          }
+        };
+      } else if (!decks[game.winner_faction][game.winner_agenda]) {
+        decks[game.winner_faction][game.winner_agenda] = {
           wins: 0,
-          losses: 1
-        }
-      };
-    } else if (!decks[game.loser_faction][game.loser_agenda]) {
-      decks[game.loser_faction][game.loser_agenda] = {
-        wins: 0,
-        losses: 1
-      };
+          losses: 0,
+          played: 2
+        };
+      } else {
+        decks[game.winner_faction][game.winner_agenda].played += 2;
+      }
     } else {
-      decks[game.loser_faction][game.loser_agenda].losses++;
+      if (!decks[game.winner_faction]) {
+        decks[game.winner_faction] = {
+          [game.winner_agenda]: {
+            wins: 1,
+            losses: 0,
+            played: 1
+          }
+        };
+      } else if (!decks[game.winner_faction][game.winner_agenda]) {
+        decks[game.winner_faction][game.winner_agenda] = {
+          wins: 1,
+          losses: 0,
+          played: 1
+        };
+      } else {
+        decks[game.winner_faction][game.winner_agenda].wins++;
+        decks[game.winner_faction][game.winner_agenda].played++;
+      }
+      if (!decks[game.loser_faction]) {
+        decks[game.loser_faction] = {
+          [game.loser_agenda]: {
+            wins: 0,
+            losses: 1,
+            played: 1
+          }
+        };
+      } else if (!decks[game.loser_faction][game.loser_agenda]) {
+        decks[game.loser_faction][game.loser_agenda] = {
+          wins: 0,
+          losses: 1,
+          played: 1
+        };
+      } else {
+        decks[game.loser_faction][game.loser_agenda].losses++;
+        decks[game.loser_faction][game.loser_agenda].played++;
+      }
     }
   });
   let list = [];
   for (let faction in decks) {
     for (let agenda in decks[faction]) {
-      if (
-        decks[faction][agenda].wins + decks[faction][agenda].losses >=
-        props.min
-      ) {
+      if (decks[faction][agenda].wins + decks[faction][agenda].losses >= min) {
         list.push({
           faction: faction,
           agenda: agenda,
@@ -60,7 +87,7 @@ const Table = props => {
               (1000 * decks[faction][agenda].wins) /
                 (decks[faction][agenda].wins + decks[faction][agenda].losses)
             ) / 10,
-          played: decks[faction][agenda].losses + decks[faction][agenda].wins
+          played: decks[faction][agenda].played
         });
       }
     }
@@ -103,6 +130,7 @@ const Table = props => {
   });
   return (
     <div>
+      <input type="number" value={min} onChange={e => setMin(e.target.value)} />
       <table>
         <thead>
           <tr>
