@@ -25,6 +25,17 @@ defmodule Agot.Games do
     Repo.all(Game)
   end
 
+  def list_games do
+    query =
+      from game in Game,
+        where:
+          not is_nil(game.winner_faction) and
+            not is_nil(game.loser_faction) and not is_nil(game.winner_agenda) and
+            not is_nil(game.loser_agenda)
+
+    Repo.all(query)
+  end
+
   def create_game(attrs, winner_id, loser_id, tournament_id) do
     case Repo.one(from game in Game, where: game.id == ^attrs.id) do
       nil ->

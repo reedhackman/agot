@@ -11,6 +11,28 @@ defmodule AgotWeb.ApiController do
     |> json(players)
   end
 
+  def all_games(conn, _params) do
+    games =
+      Games.list_games()
+      |> Enum.map(fn x ->
+        %{
+          winner_faction: x.winner_faction,
+          winner_agenda: x.winner_agenda,
+          loser_faction: x.loser_faction,
+          loser_agenda: x.loser_agenda,
+          date: x.date
+        }
+      end)
+
+    conn
+    |> put_status(200)
+    |> json(games)
+  end
+
+  def games_by_page(conn, params) do
+    page = String.to_integer(params["page"])
+  end
+
   def specific_player(conn, params) do
     id = String.to_integer(params["id"])
     player = Players.get_full_player(id)
