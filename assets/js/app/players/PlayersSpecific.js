@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import Opponents from "./PlayersSpecificOpponents";
-import Decks from "./PlayersSpecificDecks";
-import RatingGraph from "./PlayerSpecificRatingGraph";
+import PlayersSpecificOpponents from "./PlayersSpecificOpponents";
+import PlayersSpecificDecks from "./PlayersSpecificDecks";
+import PlayersSpecificRatingGraph from "./PlayersSpecificRatingGraph";
 
-const Specific = props => {
+const PlayersSpecific = props => {
+  console.log("specific");
   const [ratingsOverTime, setRatingsOverTime] = useState({});
   const [wins, setWins] = useState([]);
   const [losses, setLosses] = useState([]);
@@ -99,9 +100,9 @@ const Specific = props => {
             <p>Games Played: {props.player.played}</p>
             <p>Last Played : {lastPlayed ? lastPlayed : "N/A"}</p>
           </div>
-          <RatingGraph ratingsOverTime={ratingsOverTime} />
-          <Opponents opponents={opponents} />
-          <Decks decks={decks} />
+          <PlayersSpecificRatingGraph ratingsOverTime={ratingsOverTime} />
+          <PlayersSpecificOpponents opponents={opponents} />
+          <PlayersSpecificDecks decks={decks} />
         </div>
       ) : (
         <p>LOADING</p>
@@ -110,4 +111,4 @@ const Specific = props => {
   );
 };
 
-export default Specific;
+export default PlayersSpecific;

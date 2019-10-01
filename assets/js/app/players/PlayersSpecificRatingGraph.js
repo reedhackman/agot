@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-const RatingGraph = props => {
+const PlayersSpecificRatingGraph = props => {
   return <div>Rating Graph</div>;
 };
 
-export default RatingGraph;
+export default PlayersSpecificRatingGraph;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { A } from "hookrouter";
 
-const Opponents = props => {
+const PlayersSpecificOpponents = props => {
   const [sortBy, setSortBy] = useState("played");
   const [asc, setAsc] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -125,4 +125,4 @@ const Opponents = props => {
   );
 };
 
-export default Opponents;
+export default PlayersSpecificOpponents;

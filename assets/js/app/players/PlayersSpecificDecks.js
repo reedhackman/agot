@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { A } from "hookrouter";
 
-const Decks = props => {
+const PlayersSpecificDecks = props => {
   const [sortBy, setSortBy] = useState("played");
   const [asc, setAsc] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -74,12 +74,7 @@ const Decks = props => {
     }
   } else {
     decks.forEach(deck => {
-      if (
-        deck.faction &&
-        deck.faction !== "null" &&
-        deck.agenda &&
-        deck.agenda !== "null"
-      ) {
+      if (deck.faction && deck.agenda) {
         rows.push(
           <tr key={deck.faction + deck.agenda}>
             <td>
@@ -150,4 +145,4 @@ const Decks = props => {
   );
 };
 
-export default Decks;
+export default PlayersSpecificDecks;

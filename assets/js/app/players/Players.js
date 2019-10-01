@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRoutes } from "hookrouter";
-import Specific from "./PlayersSpecific";
-import Table from "./PlayersTable";
+import PlayersSpecific from "./PlayersSpecific";
+import PlayersTable from "./PlayersTable";
 
 const Players = props => {
   const [players, setPlayers] = useState([]);
@@ -14,7 +14,9 @@ const Players = props => {
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("/api/players");
+      console.log(response);
       const data = await response.json();
+      console.log(data);
       let count = 0;
       data.forEach(player => {
         if (player.played >= min) {
@@ -73,8 +75,8 @@ const Players = props => {
     }
   };
   const routes = {
-    "/players": () => (
-      <Table
+    "/": () => (
+      <PlayersTable
         state={{
           players: players,
           page: page,
@@ -90,8 +92,8 @@ const Players = props => {
         handleSort={handleSort}
       />
     ),
-    "/players/:id": ({ id }) => (
-      <Specific
+    "/:id": ({ id }) => (
+      <PlayersSpecific
         player={players.find(p => {
           return p.id == parseInt(id);
         })}

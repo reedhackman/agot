@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { A } from "hookrouter";
 
-const Table = props => {
+const PlayersTable = props => {
   let data = props.state.players;
   let rows = [];
   let list = [];
@@ -243,4 +243,4 @@ const Table = props => {
   );
 };
 
-export default Table;
+export default PlayersTable;
