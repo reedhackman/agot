@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Opponents from "./PlayersSpecificOpponents";
 import Decks from "./PlayersSpecificDecks";
+import RatingGraph from "./PlayerSpecificRatingGraph";
 
 const Specific = props => {
   const [ratingsOverTime, setRatingsOverTime] = useState({});
@@ -78,6 +79,15 @@ const Specific = props => {
       }
     }
   });
+  let ratingDates = Object.keys(ratingsOverTime);
+  ratingDates.sort((a, b) => {
+    return new Date(a) > new Date(b) ? 1 : new Date(b) > new Date(a) ? -1 : 0;
+  });
+  let lastPlayed = ratingDates[ratingDates.length - 1];
+  if (lastPlayed) {
+    lastPlayed = lastPlayed.slice(0, 10);
+  }
+  console.log(typeof lastPlayed);
   return (
     <div>
       {props.player ? (
@@ -87,8 +97,9 @@ const Specific = props => {
             <p>Rating: {Math.round(props.player.rating)}</p>
             <p>Win Rate: {Math.round(1000 * props.player.percent) / 10}%</p>
             <p>Games Played: {props.player.played}</p>
-            <p>Last Played : {"coming soon"}</p>
+            <p>Last Played : {lastPlayed ? lastPlayed : "N/A"}</p>
           </div>
+          <RatingGraph ratingsOverTime={ratingsOverTime} />
           <Opponents opponents={opponents} />
           <Decks decks={decks} />
         </div>

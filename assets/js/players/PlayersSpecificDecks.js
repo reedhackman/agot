@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { A } from "hookrouter";
 
 const Decks = props => {
   const [sortBy, setSortBy] = useState("played");
   const [asc, setAsc] = useState(false);
-  const [showing, setShowing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const handleSort = e => {
     if (sortBy === e) {
       setAsc(!asc);
@@ -15,17 +16,19 @@ const Decks = props => {
   let decks = [];
   for (let faction in props.decks) {
     for (let agenda in props.decks[faction]) {
-      decks.push({
-        faction: faction,
-        agenda: agenda,
-        percent:
-          props.decks[faction][agenda].wins /
-          (props.decks[faction][agenda].wins +
-            props.decks[faction][agenda].losses),
-        played:
-          props.decks[faction][agenda].wins +
-          props.decks[faction][agenda].losses
-      });
+      if (faction !== "null" && agenda !== "null") {
+        decks.push({
+          faction: faction,
+          agenda: agenda,
+          percent:
+            props.decks[faction][agenda].wins /
+            (props.decks[faction][agenda].wins +
+              props.decks[faction][agenda].losses),
+          played:
+            props.decks[faction][agenda].wins +
+            props.decks[faction][agenda].losses
+        });
+      }
     }
   }
   decks.sort((a, b) => {
@@ -42,32 +45,107 @@ const Decks = props => {
     }
   });
   let rows = [];
-  decks.forEach(deck => {
-    rows.push(
-      <tr key={deck.faction + deck.agenda}>
-        <td>{deck.faction}</td>
-        <td>{deck.agenda}</td>
-        <td>{deck.percent}</td>
-        <td>{deck.played}</td>
-      </tr>
-    );
-  });
+  if (!expanded) {
+    for (var i = 0; i < Math.min(5, decks.length); i++) {
+      rows.push(
+        <tr key={decks[i].faction + decks[i].agenda}>
+          <td>
+            <div className="PlayersSpecificDecks-Faction">
+              <A href={`/decks/${decks[i].faction}`}>{decks[i].faction}</A>
+            </div>
+          </td>
+          <td>
+            <div className="PlayersSpecificDecks-Agenda">
+              <A href={`/decks/${decks[i].faction}/${decks[i].agenda}`}>
+                {decks[i].agenda}
+              </A>
+            </div>
+          </td>
+          <td>
+            <div className="PlayersSpecificDecks-Percent">
+              {Math.round(1000 * decks[i].percent) / 10}
+            </div>
+          </td>
+          <td>
+            <div className="PlayersSpecificDecks-Played">{decks[i].played}</div>
+          </td>
+        </tr>
+      );
+    }
+  } else {
+    decks.forEach(deck => {
+      if (
+        deck.faction &&
+        deck.faction !== "null" &&
+        deck.agenda &&
+        deck.agenda !== "null"
+      ) {
+        rows.push(
+          <tr key={deck.faction + deck.agenda}>
+            <td>
+              <div className="PlayersSpecificDecks-Faction">
+                <A href={`/decks/${deck.faction}`}>{deck.faction}</A>
+              </div>
+            </td>
+            <td>
+              <div className="PlayersSpecificDecks-Agenda">
+                <A href={`/decks/${deck.faction}/${deck.agenda}`}>
+                  {deck.agenda}
+                </A>
+              </div>
+            </td>
+            <td>
+              <div className="PlayersSpecificDecks-Percent">
+                {Math.round(1000 * deck.percent) / 10}
+              </div>
+            </td>
+            <td>
+              <div className="PlayersSpecificDecks-Played">{deck.played}</div>
+            </td>
+          </tr>
+        );
+      }
+    });
+  }
   return (
     <div>
-      <h2 onClick={() => setShowing(!showing)}>Decks</h2>
-      {showing ? (
-        <table>
-          <thead>
-            <tr>
-              <th onClick={() => handleSort("faction")}>Faction</th>
-              <th onClick={() => handleSort("agenda")}>Agenda</th>
-              <th onClick={() => handleSort("percent")}>Percent</th>
-              <th onClick={() => handleSort("played")}>Played</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </table>
-      ) : null}
+      <h2>Decks</h2>
+      <table>
+        <thead>
+          <tr>
+            <th
+              className="PlayersSpecificDecks-FactionHeader"
+              onClick={() => handleSort("faction")}
+            >
+              <div className="PlayersSpecificDecks-Faction">Faction</div>
+            </th>
+            <th
+              className="PlayersSpecificDecks-AgendaHeader"
+              onClick={() => handleSort("agenda")}
+            >
+              <div className="PlayersSpecificDecks-Agenda">Agenda</div>
+            </th>
+            <th
+              className="PlayersSpecificDecks-PercentHeader"
+              onClick={() => handleSort("percent")}
+            >
+              <div className="PlayersSpecificDecks-Percent">Percent</div>
+            </th>
+            <th
+              className="PlayersSpecificDecks-PercentHeader"
+              onClick={() => handleSort("played")}
+            >
+              <div className="PlayersSpecificDecks-Played">Played</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <div onClick={() => setExpanded(!expanded)}>
+        {decks.length >= 5 ? (
+          <div>{expanded ? "collapse" : "expand"}</div>
+        ) : null}
+      </div>
     </div>
   );
 };
