@@ -21,7 +21,7 @@ const Decks = props => {
   );
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch(`/api/games/${start}/${end}`);
+      const response = await fetch(`/api/games/date/${start}/${end}`);
       const data = await response.json();
       setAllGames(data.games);
     }
