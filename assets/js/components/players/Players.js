@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRoutes } from "hookrouter";
-import Specific from "./PlayersSpecific";
-import Table from "./PlayersTable";
+import Specific from "./players/Specific";
+import Table from "./players/Table";
 
 const Players = props => {
   const [players, setPlayers] = useState([]);
