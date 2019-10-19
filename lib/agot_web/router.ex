@@ -16,10 +16,7 @@ defmodule AgotWeb.Router do
   scope "/", AgotWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/players/*path", PlayersController, :index
-    get "/decks/*path", DecksController, :index
-    get "/faq", PageController, :faq
+    get "/*path", PageController, :index
   end
 
   # Other scopes may use custom stacks.
@@ -28,12 +25,5 @@ defmodule AgotWeb.Router do
   # end
   scope "/api", AgotWeb do
     pipe_through :api
-
-    get "/players", ApiController, :all_players
-    get "/players/:id", ApiController, :specific_player
-    get "/games", ApiController, :all_games
-    get "/games/page/:page", ApiController, :games_by_page
-    get "/games/date/:start/:end", ApiController, :games_over_range
-    get "/decks/:faction/:agenda", ApiController, :games_for_deck
   end
 end

@@ -9,16 +9,7 @@
   </head>
   <body>
     <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <li><a href="/players">Players</a></li>
-            <li><a href="/decks">Decks</a></li>
-            <li><a href="/faq">F.A.Q.</a></li>
-          </ul>
-        </nav>
-        <div><a href="/">AGOT Fighting Pits</a></div>
-      </section>
+      <%= ReactPhoenix.ClientSide.react_component("Components.NavBar") %>
     </header>
     <main role="main" class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
@@ -26,8 +17,5 @@
       <%= render @view_module, @view_template, assigns %>
     </main>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
-    <%= if assigns[:script_name] do %>
-      <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/#{@script_name}.js") %>"></script>
-    <% end %>
   </body>
 </html>
