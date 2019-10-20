@@ -2,55 +2,53 @@ import React, { useState, useEffect } from "react";
 import { A } from "hookrouter";
 
 const Table = props => {
-  let data = props.state.players;
+  let players = props.players;
+  const [asc, setAsc] = useState(false);
+  const [sortBy, setSortBy] = useState("name");
+  const [input, setInput] = useState("");
+  const [page, setPage] = useState(0);
+  const [last, setLast] = useState(0);
+  const [min, setMin] = useState(0);
+  const handleSearch = e => {};
+  const handleSort = e => {};
+  const handlePage = e => {};
+  const handleMin = e => {};
   let rows = [];
   let list = [];
+  let data = [...players];
   data.sort((a, b) => {
-    if (props.state.asc) {
-      if (props.state.sortBy === "name") {
-        if (
-          a[props.state.sortBy].toLowerCase() >
-          b[props.state.sortBy].toLowerCase()
-        ) {
+    if (asc) {
+      if (sortBy === "name") {
+        if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) {
           return -1;
         }
-        if (
-          b[props.state.sortBy].toLowerCase() >
-          a[props.state.sortBy].toLowerCase()
-        ) {
+        if (b[sortBy].toLowerCase() > a[sortBy].toLowerCase()) {
           return 1;
         }
         return 0;
       }
-      return a[props.state.sortBy] - b[props.state.sortBy];
+      return a[sortBy] - b[sortBy];
     }
-    if (props.state.sortBy === "name") {
-      if (
-        a[props.state.sortBy].toLowerCase() >
-        b[props.state.sortBy].toLowerCase()
-      ) {
+    if (sortBy === "name") {
+      if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) {
         return 1;
       }
-      if (
-        b[props.state.sortBy].toLowerCase() >
-        a[props.state.sortBy].toLowerCase()
-      ) {
+      if (b[sortBy].toLowerCase() > a[sortBy].toLowerCase()) {
         return -1;
       }
       return 0;
     }
-    return b[props.state.sortBy] - a[props.state.sortBy];
+    return b[sortBy] - a[sortBy];
   });
   data.forEach(player => {
     if (
-      player.name.toLowerCase().indexOf(props.state.input.toLowerCase()) !==
-        -1 &&
-      player.played >= props.state.min
+      player.name.toLowerCase().indexOf(input.toLowerCase()) !== -1 &&
+      player.played >= min
     ) {
       rows.push(player);
     }
   });
-  let j = Math.max((props.state.page - 1) * 20, 0);
+  let j = Math.max((page - 1) * 20, 0);
   let k = rows.length - j;
   for (let i = 0; i < Math.min(k, 20); i++) {
     let player = rows[j];
@@ -70,36 +68,33 @@ const Table = props => {
   }
   const nav = (
     <div className="navbuttons">
-      {props.state.page === 1 ? null : (
-        <div
-          onClick={() => props.handlePage(1)}
-          className="button-table button-left"
-        >
+      {page === 1 ? null : (
+        <div onClick={() => handlePage(1)} className="button-table button-left">
           First
         </div>
       )}
-      {props.state.page === 1 ? null : (
+      {page === 1 ? null : (
         <div
-          onClick={() => props.handlePage(props.state.page - 1)}
+          onClick={() => handlePage(page - 1)}
           className="button-table button-left"
         >
           Prev
         </div>
       )}
       <span>
-        Page {props.state.page} of {props.state.last}
+        Page {page} of {last}
       </span>
-      {props.state.page === props.state.last ? null : (
+      {page === last ? null : (
         <div
-          onClick={() => props.handlePage(props.state.page + 1)}
+          onClick={() => handlePage(page + 1)}
           className="button-table button-right"
         >
           Next
         </div>
       )}
-      {props.state.page === props.state.last ? null : (
+      {page === last ? null : (
         <div
-          onClick={() => props.handlePage(props.state.last)}
+          onClick={() => handlePage(last)}
           className="button-table button-right"
         >
           Last
@@ -111,8 +106,8 @@ const Table = props => {
     <div className="minbox">
       <input
         type="number"
-        value={props.state.min}
-        onChange={e => props.handleMin(e.target.value)}
+        value={min}
+        onChange={e => handleMin(e.target.value)}
       />
       <span> Minimum number of games played</span>
     </div>
@@ -122,8 +117,8 @@ const Table = props => {
       <input
         type="text"
         placeholder="Search By Player Name..."
-        value={props.state.input}
-        onChange={e => props.handleSearch(e.target.value)}
+        value={input}
+        onChange={e => handleSearch(e.target.value)}
         change="input"
       />
       <span> Search only players whose names match this string</span>
@@ -139,13 +134,13 @@ const Table = props => {
         <thead>
           <tr>
             <th className="players-table-name">
-              {props.state.sortBy === name ? (
+              {sortBy === name ? (
                 <div
-                  onClick={() => props.handleSort("name")}
+                  onClick={() => handleSort("name")}
                   value="name"
                   className="reactButtonPrimary"
                 >
-                  {props.state.asc ? (
+                  {asc ? (
                     <i className="la la-sort-alpha-asc"></i>
                   ) : (
                     <i className="la la-sort-alpha-desc"></i>
@@ -154,7 +149,7 @@ const Table = props => {
                 </div>
               ) : (
                 <div
-                  onClick={() => props.handleSort("name")}
+                  onClick={() => handleSort("name")}
                   value="name"
                   className="reactButton"
                 >
@@ -163,13 +158,13 @@ const Table = props => {
               )}
             </th>
             <th className="players-table-rating">
-              {props.state.sortBy === "rating" ? (
+              {sortBy === "rating" ? (
                 <div
-                  onClick={() => props.handleSort("rating")}
+                  onClick={() => handleSort("rating")}
                   value="rating"
                   className="reactButtonPrimary"
                 >
-                  {props.state.asc ? (
+                  {asc ? (
                     <i className="la la-sort-numeric-asc"></i>
                   ) : (
                     <i className="la la-sort-numeric-desc"></i>
@@ -178,7 +173,7 @@ const Table = props => {
                 </div>
               ) : (
                 <div
-                  onClick={() => props.handleSort("rating")}
+                  onClick={() => handleSort("rating")}
                   value="rating"
                   className="reactButton"
                 >
@@ -187,13 +182,13 @@ const Table = props => {
               )}
             </th>
             <th className="players-table-percent">
-              {props.state.sortBy === "percent" ? (
+              {sortBy === "percent" ? (
                 <div
-                  onClick={() => props.handleSort("percent")}
+                  onClick={() => handleSort("percent")}
                   value="percent"
                   className="reactButtonPrimary"
                 >
-                  {props.state.asc ? (
+                  {asc ? (
                     <i className="la la-sort-numeric-asc"></i>
                   ) : (
                     <i className="la la-sort-numeric-desc"></i>
@@ -202,7 +197,7 @@ const Table = props => {
                 </div>
               ) : (
                 <div
-                  onClick={() => props.handleSort("percent")}
+                  onClick={() => handleSort("percent")}
                   value="percent"
                   className="reactButton"
                 >
@@ -211,13 +206,13 @@ const Table = props => {
               )}
             </th>
             <th className="players-table-played">
-              {props.state.sortBy === "played" ? (
+              {sortBy === "played" ? (
                 <div
-                  onClick={() => props.handleSort("played")}
+                  onClick={() => handleSort("played")}
                   value="played"
                   className="reactButtonPrimary"
                 >
-                  {props.state.asc ? (
+                  {asc ? (
                     <i className="la la-sort-numeric-asc"></i>
                   ) : (
                     <i className="la la-sort-numeric-desc"></i>
@@ -226,7 +221,7 @@ const Table = props => {
                 </div>
               ) : (
                 <div
-                  onClick={() => props.handleSort("played")}
+                  onClick={() => handleSort("played")}
                   value="played"
                   className="reactButton"
                 >
