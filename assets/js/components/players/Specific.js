@@ -8,31 +8,29 @@ const Specific = props => {
   const [wins, setWins] = useState([]);
   const [losses, setLosses] = useState([]);
   useEffect(() => {
-    if (props.player) {
+    if (props.id) {
       async function fetchData() {
-        const response = await fetch(`/api/players/${props.player.id}`);
+        const response = await fetch(`/api/players/specific/${props.id}`);
         const data = await response.json();
-        setRatingsOverTime(data.ratings_over_time);
-        setWins(data.wins);
-        setLosses(data.losses);
+        setRatingsOverTime(data.player.ratings_over_time);
+        setWins(data.games.wins);
+        setLosses(data.games.losses);
       }
       fetchData();
     }
-  }, [props.player]);
+  }, [props.id]);
   let opponents = {};
   let decks = {};
-  console.log(wins);
-  console.log(losses);
   wins.forEach(win => {
-    if (win.loser.id) {
-      if (!opponents[win.loser.id]) {
-        opponents[win.loser.id] = {
+    if (win.loser_id) {
+      if (!opponents[win.loser_id]) {
+        opponents[win.loser_id] = {
           wins: 1,
           losses: 0,
-          name: win.loser.name
+          name: win.loser_name
         };
       } else {
-        opponents[win.loser.id].wins++;
+        opponents[win.loser_id].wins++;
       }
       if (!decks[win.faction]) {
         decks[win.faction] = {
@@ -52,15 +50,15 @@ const Specific = props => {
     }
   });
   losses.forEach(loss => {
-    if (loss.winner.id) {
-      if (!opponents[loss.winner.id]) {
-        opponents[loss.winner.id] = {
+    if (loss.winner_id) {
+      if (!opponents[loss.winner_id]) {
+        opponents[loss.winner_id] = {
           wins: 0,
           losses: 1,
-          name: loss.winner.name
+          name: loss.winner_name
         };
       } else {
-        opponents[loss.winner.id].losses++;
+        opponents[loss.winner_id].losses++;
       }
       if (!decks[loss.faction]) {
         decks[loss.faction] = {

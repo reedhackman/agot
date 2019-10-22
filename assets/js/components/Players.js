@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRoutes } from "hookrouter";
-import Table from "./players/PlayersTable.js";
+import Table from "./players/Table.js";
+import Specific from "./players/Specific.js";
 
 const Players = props => {
   const [players, setPlayers] = useState([]);
@@ -18,10 +19,6 @@ const Players = props => {
   };
   const routeResult = useRoutes(routes);
   return <div className="Players-wrapper">{routeResult}</div>;
-};
-
-const Specific = props => {
-  return <div>{props.id}</div>;
 };
 
 export default Players;

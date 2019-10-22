@@ -9,10 +9,63 @@ const Table = props => {
   const [page, setPage] = useState(0);
   const [last, setLast] = useState(0);
   const [min, setMin] = useState(0);
-  const handleSearch = e => {};
-  const handleSort = e => {};
-  const handlePage = e => {};
-  const handleMin = e => {};
+  useEffect(() => {
+    const count = players.length;
+    setPage(Math.min(1, count));
+    setLast(Math.ceil(count / 20));
+  }, []);
+  const handleSearch = newInput => {
+    if (input !== newInput) {
+      let count = 0;
+      players.forEach(player => {
+        if (
+          player.name.toLowerCase().indexOf(newInput.toLowerCase()) !== -1 &&
+          player.played >= min
+        ) {
+          count++;
+        }
+      });
+      setPage(Math.min(1, count));
+      setLast(Math.ceil(count / 20));
+      setInput(newInput);
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+  };
+  const handleSort = newSort => {
+    if (newSort === sortBy) {
+      setAsc(!asc);
+    } else {
+      setAsc(false);
+      setSortBy(newSort);
+      setPage(1);
+    }
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+  };
+  const handlePage = newPage => {
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    setPage(newPage);
+  };
+  const handleMin = newMin => {
+    if (min !== newMin) {
+      let count = 0;
+      players.forEach(player => {
+        if (
+          player.played >= newMin &&
+          player.name.toLowerCase().indexOf(input.toLowerCase()) !== -1
+        ) {
+          count++;
+        }
+      });
+      setPage(Math.min(1, count));
+      setLast(Math.ceil(count / 20));
+      setMin(newMin);
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+  };
   let rows = [];
   let list = [];
   let data = [...players];

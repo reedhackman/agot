@@ -2,6 +2,7 @@ defmodule AgotWeb.PlayersApiController do
   use AgotWeb, :controller
 
   alias Agot.Players
+  alias Agot.Games
 
   def all(conn, _params) do
     players =
@@ -17,13 +18,13 @@ defmodule AgotWeb.PlayersApiController do
 
   def specific(conn, params) do
     id = params["id"]
+    IO.inspect(id)
 
-    wins = Players.get_wins(id)
-    losses = Players.get_losses(id)
+    games = Games.for_player(id)
     player = Players.get_specific(id)
 
     conn
     |> put_status(200)
-    |> json(%{wins: wins, losses: losses, player: player})
+    |> json(%{games: games, player: player})
   end
 end

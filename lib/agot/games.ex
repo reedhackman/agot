@@ -6,6 +6,48 @@ defmodule Agot.Games do
   alias Agot.Repo
   import Ecto.Query
 
+  def for_player(id) do
+    wins = wins_for_player(id)
+    losses = losses_for_player(id)
+    %{wins: wins, losses: losses}
+  end
+
+  def losses_for_player(id) do
+    query =
+      from g in Game,
+        where: g.loser_id == ^id,
+        left_join: winner in assoc(g, :winner),
+        left_join: loser in assoc(g, :loser),
+        select: %{
+          winner_id: g.winner_id,
+          loser_id: g.loser_id,
+          winner_name: winner.name,
+          loser_name: loser.name,
+          loser_faction: g.loser_faction,
+          loser_agenda: g.loser_agenda
+        }
+
+    Repo.all(query)
+  end
+
+  def wins_for_player(id) do
+    query =
+      from g in Game,
+        where: g.winner_id == ^id,
+        left_join: winner in assoc(g, :winner),
+        left_join: loser in assoc(g, :loser),
+        select: %{
+          winner_id: g.winner_id,
+          loser_id: g.loser_id,
+          winner_name: winner.name,
+          loser_name: loser.name,
+          winner_faction: g.winner_faction,
+          winner_agenda: g.winner_agenda
+        }
+
+    Repo.all(query)
+  end
+
   def create_incomplete(attrs) do
     %Incomplete{}
     |> Incomplete.changeset(attrs)
