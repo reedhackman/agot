@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Opponents from "./PlayersSpecificOpponents";
-import Decks from "./PlayersSpecificDecks";
-import RatingGraph from "./PlayerSpecificRatingGraph";
+import Opponents from "./SpecificOpponents";
+import Decks from "./SpecificDecks";
+import RatingGraph from "./SpecificRatingGraph";
 
 const Specific = props => {
   const [ratingsOverTime, setRatingsOverTime] = useState({});
