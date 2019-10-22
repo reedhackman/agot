@@ -20,8 +20,10 @@ defmodule AgotWeb.Router do
   scope "/api", AgotWeb do
     pipe_through :api
 
-    get "/players/all", PlayersApiController, :all
-    get "/players/specific/:id", PlayersApiController, :specific
+    get "/decks", DecksApiController, :all
+
+    get "/players", PlayersApiController, :all
+    get "/players/:id", PlayersApiController, :specific
   end
 
   scope "/", AgotWeb do
