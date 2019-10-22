@@ -7,7 +7,7 @@ defmodule Agot.Analytica do
   alias Agot.Misc
 
   def update_all_decks_three_months do
-    Decks.list_decks()
+    Decks.list_all()
     |> Enum.each(fn x -> update_single_deck_three_months(x.faction, x.agenda) end)
   end
 
@@ -230,7 +230,7 @@ defmodule Agot.Analytica do
 
     loser = Players.get_player(game.loser.id, game.loser.name)
 
-    tournament =
+    _ =
       Tournaments.get_tournament(
         game.misc.tournament_id,
         game.misc.tournament_name,

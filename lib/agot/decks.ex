@@ -3,7 +3,7 @@ defmodule Agot.Decks do
   alias Agot.Repo
   import Ecto.Query
 
-  def list_decks do
+  def list_all do
     Repo.all(Deck)
   end
 
@@ -15,6 +15,20 @@ defmodule Agot.Decks do
         limit: 10
 
     Repo.all(query)
+  end
+
+  def get_deck(faction, nil) do
+    query =
+      from deck in Deck,
+        where: deck.faction == ^faction and is_nil(deck.agenda)
+
+    case Repo.one(query) do
+      nil ->
+        create_deck(faction, nil)
+
+      deck ->
+        deck
+    end
   end
 
   def get_deck(faction, agenda) do
