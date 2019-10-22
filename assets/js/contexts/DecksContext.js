@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, Component } from "react";
+import React, { useState, useEffect, createContext } from "react";
 
 export const DecksContext = createContext();
 
@@ -6,8 +6,9 @@ const DecksContextProvider = props => {
   const [state, setState] = useState(false);
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("/api/decks/");
+      const response = await fetch("/api/decks");
       const data = await response.json();
+      console.log(data);
       setState(data);
     }
     fetchData();

@@ -10,7 +10,7 @@ const Specific = props => {
   useEffect(() => {
     if (props.id) {
       async function fetchData() {
-        const response = await fetch(`/api/players/specific/${props.id}`);
+        const response = await fetch(`/api/players/${props.id}`);
         const data = await response.json();
         setRatingsOverTime(data.player.ratings_over_time);
         setWins(data.games.wins);

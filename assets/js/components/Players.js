@@ -2,10 +2,10 @@ import React, { useState, useContext } from "react";
 import { useRoutes } from "hookrouter";
 import Table from "./players/Table.js";
 import Specific from "./players/Specific.js";
-import { PlayerContext } from "../contexts/PlayerContext.js";
+import { PlayersContext } from "../contexts/PlayersContext.js";
 
 const Players = props => {
-  const { players } = useContext(PlayerContext);
+  const { players } = useContext(PlayersContext);
 
   const routes = {
     "/:id": ({ id }) => <Specific id={id} />,

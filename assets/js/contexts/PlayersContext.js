@@ -1,12 +1,12 @@
-import React, { useState, useEffect, createContext, Component } from "react";
+import React, { useState, useEffect, createContext } from "react";
 
-export const PlayerContext = createContext();
+export const PlayersContext = createContext();
 
-const PlayerContextProvider = props => {
+const PlayersContextProvider = props => {
   const [state, setState] = useState(false);
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("/api/players/all");
+      const response = await fetch("/api/players");
       const data = await response.json();
       setState(data);
     }
@@ -14,10 +14,10 @@ const PlayerContextProvider = props => {
   }, []);
 
   return (
-    <PlayerContext.Provider value={{ ...state }}>
+    <PlayersContext.Provider value={{ ...state }}>
       {props.children}
-    </PlayerContext.Provider>
+    </PlayersContext.Provider>
   );
 };
 
-export default PlayerContextProvider;
+export default PlayersContextProvider;
