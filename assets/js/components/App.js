@@ -3,6 +3,7 @@ import { useRoutes } from "hookrouter";
 import Home from "./Home.js";
 import Decks from "./Decks.js";
 import Players from "./Players.js";
+import NavBar from "./NavBar.js";
 
 const App = () => {
   const routes = {
@@ -11,7 +12,12 @@ const App = () => {
     "*": () => <Home />
   };
   const routeResult = useRoutes(routes);
-  return <div className="App-wrapper">{routeResult}</div>;
+  return (
+    <div className="App-wrapper">
+      <NavBar />
+      {routeResult}
+    </div>
+  );
 };
 
 export default App;
