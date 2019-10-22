@@ -4,6 +4,8 @@ import Home from "./Home.js";
 import Decks from "./Decks.js";
 import Players from "./Players.js";
 import NavBar from "./NavBar.js";
+import PlayersContextProvider from "../contexts/PlayersContext.js";
+import DecksContextProvider from "../contexts/DecksContext.js";
 
 const App = () => {
   const routes = {
@@ -15,7 +17,9 @@ const App = () => {
   return (
     <div className="App-wrapper">
       <NavBar />
-      {routeResult}
+      <PlayersContextProvider>
+        <DecksContextProvider>{routeResult}</DecksContextProvider>
+      </PlayersContextProvider>
     </div>
   );
 };

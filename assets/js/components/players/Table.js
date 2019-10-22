@@ -10,10 +10,12 @@ const Table = props => {
   const [last, setLast] = useState(0);
   const [min, setMin] = useState(0);
   useEffect(() => {
-    const count = players.length;
-    setPage(Math.min(1, count));
-    setLast(Math.ceil(count / 20));
-  }, []);
+    if (players) {
+      const count = players.length;
+      setPage(Math.min(1, count));
+      setLast(Math.ceil(count / 20));
+    }
+  }, [props.players]);
   const handleSearch = newInput => {
     if (input !== newInput) {
       let count = 0;
@@ -68,39 +70,41 @@ const Table = props => {
   };
   let rows = [];
   let list = [];
-  let data = [...players];
-  data.sort((a, b) => {
-    if (asc) {
+  if (players) {
+    let data = [...players];
+    data.sort((a, b) => {
+      if (asc) {
+        if (sortBy === "name") {
+          if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) {
+            return -1;
+          }
+          if (b[sortBy].toLowerCase() > a[sortBy].toLowerCase()) {
+            return 1;
+          }
+          return 0;
+        }
+        return a[sortBy] - b[sortBy];
+      }
       if (sortBy === "name") {
         if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) {
-          return -1;
+          return 1;
         }
         if (b[sortBy].toLowerCase() > a[sortBy].toLowerCase()) {
-          return 1;
+          return -1;
         }
         return 0;
       }
-      return a[sortBy] - b[sortBy];
-    }
-    if (sortBy === "name") {
-      if (a[sortBy].toLowerCase() > b[sortBy].toLowerCase()) {
-        return 1;
+      return b[sortBy] - a[sortBy];
+    });
+    data.forEach(player => {
+      if (
+        player.name.toLowerCase().indexOf(input.toLowerCase()) !== -1 &&
+        player.played >= min
+      ) {
+        rows.push(player);
       }
-      if (b[sortBy].toLowerCase() > a[sortBy].toLowerCase()) {
-        return -1;
-      }
-      return 0;
-    }
-    return b[sortBy] - a[sortBy];
-  });
-  data.forEach(player => {
-    if (
-      player.name.toLowerCase().indexOf(input.toLowerCase()) !== -1 &&
-      player.played >= min
-    ) {
-      rows.push(player);
-    }
-  });
+    });
+  }
   let j = Math.max((page - 1) * 20, 0);
   let k = rows.length - j;
   for (let i = 0; i < Math.min(k, 20); i++) {
@@ -286,9 +290,13 @@ const Table = props => {
         </thead>
         <tbody>{list}</tbody>
       </table>
-      <div className="table-nav-buttons">{nav}</div>
+      {<NavButtons page={page} last={last} />}
     </div>
   );
+};
+
+const NavButtons = props => {
+  return <div className="PlayersTable-NavButtons">BUTTONS</div>;
 };
 
 export default Table;

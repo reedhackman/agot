@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useRoutes } from "hookrouter";
 import Table from "./players/Table.js";
 import Specific from "./players/Specific.js";
+import { PlayerContext } from "../contexts/PlayerContext.js";
 
 const Players = props => {
-  const [players, setPlayers] = useState([]);
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("/api/players/all");
-      const data = await response.json();
-      setPlayers(data.players);
-    }
-    fetchData();
-  }, []);
+  const { players } = useContext(PlayerContext);
+
   const routes = {
     "/:id": ({ id }) => <Specific id={id} />,
     "*": () => <Table players={players} />
