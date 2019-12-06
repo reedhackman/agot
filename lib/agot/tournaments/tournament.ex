@@ -3,6 +3,7 @@ defmodule Agot.Tournaments.Tournament do
   import Ecto.Changeset
 
   alias Agot.Games.Game
+  alias Agot.Games.Incomplete
   alias Agot.Players.Player
 
   @fields [
@@ -24,6 +25,7 @@ defmodule Agot.Tournaments.Tournament do
     field :date, :utc_datetime
 
     has_many :games, Game
+    has_many :incomplete, Incomplete
     many_to_many :players, Player, join_through: "players_tournaments"
   end
 

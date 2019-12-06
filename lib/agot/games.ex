@@ -7,9 +7,15 @@ defmodule Agot.Games do
   import Ecto.Query
 
   def create_incomplete(attrs) do
-    %Incomplete{}
-    |> Incomplete.changeset(attrs)
-    |> Repo.insert()
+    case Repo.one(from i in Incomplete, where: i.id == ^attrs.id) do
+      nil ->
+        %Incomplete{}
+        |> Incomplete.changeset(attrs)
+        |> Repo.insert()
+
+      incomplete ->
+        nil
+    end
   end
 
   def delete_incomplete(id) do

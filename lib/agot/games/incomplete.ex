@@ -2,6 +2,8 @@ defmodule Agot.Games.Incomplete do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Agot.Tournaments.Tournament
+
   @fields [
     :tournament_id,
     :tournament_date,
@@ -9,7 +11,7 @@ defmodule Agot.Games.Incomplete do
   ]
 
   schema "incomplete_games" do
-    field :tournament_id, :integer
+    belongs_to :tournament, Tournament
     field :tournament_date, :utc_datetime
   end
 

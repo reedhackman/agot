@@ -6,10 +6,12 @@ defmodule Agot.Players do
   def get_player(id, name) do
     query =
       from player in Player,
-      where: player.id == ^id
+        where: player.id == ^id
+
     case Repo.one(query) do
       nil ->
         create_player(id, name)
+
       player ->
         player
     end
@@ -18,10 +20,12 @@ defmodule Agot.Players do
   def get_player(id) do
     query =
       from player in Player,
-      where: player.id == ^id
+        where: player.id == ^id
+
     case Repo.one(query) do
       nil ->
         nil
+
       player ->
         player
     end
@@ -29,26 +33,38 @@ defmodule Agot.Players do
 
   def list_players do
     Repo.all(Player)
-    |> Enum.map(fn x -> %{id: x.id, name: x.name, rating: x.rating, percent: x.percent, played: x.played} end)
+    |> Enum.map(fn x ->
+      %{id: x.id, name: x.name, rating: x.rating, percent: x.percent, played: x.played}
+    end)
   end
 
   def get_wins_for_player(id) do
     query =
       from player in Player,
-      where: player.id == ^id,
-      left_join: wins in assoc(player, :wins),
-      left_join: loser in assoc(wins, :loser),
-      select: %{faction: wins.winner_faction, agenda: wins.winner_agenda, loser: %{id: loser.id, name: loser.name}}
+        where: player.id == ^id,
+        left_join: wins in assoc(player, :wins),
+        left_join: loser in assoc(wins, :loser),
+        select: %{
+          faction: wins.winner_faction,
+          agenda: wins.winner_agenda,
+          loser: %{id: loser.id, name: loser.name}
+        }
+
     Repo.all(query)
   end
 
   def get_losses_for_player(id) do
     query =
       from player in Player,
-      where: player.id == ^id,
-      left_join: losses in assoc(player, :losses),
-      left_join: winner in assoc(losses, :winner),
-      select: %{faction: losses.loser_faction, agenda: losses.loser_agenda, winner: %{id: winner.id, name: winner.name}}
+        where: player.id == ^id,
+        left_join: losses in assoc(player, :losses),
+        left_join: winner in assoc(losses, :winner),
+        select: %{
+          faction: losses.loser_faction,
+          agenda: losses.loser_agenda,
+          winner: %{id: winner.id, name: winner.name}
+        }
+
     Repo.all(query)
   end
 
@@ -72,8 +88,9 @@ defmodule Agot.Players do
   def create_player(id, name) do
     {:ok, player} =
       %Player{}
-      |> Player.create_changeset(%{id: id, name: name, num_wins: 0, num_losses: 0, rating: 1200})
+      |> Player.create_changeset(%{id: id, name: name})
       |> Repo.insert()
+
     player
   end
 
@@ -86,18 +103,20 @@ defmodule Agot.Players do
   def get_winner(id) do
     query =
       from player in Player,
-      where: player.id == ^id,
-      left_join: wins in assoc(player, :wins),
-      preload: [wins: wins]
+        where: player.id == ^id,
+        left_join: wins in assoc(player, :wins),
+        preload: [wins: wins]
+
     Repo.one(query)
   end
 
   def get_loser(id) do
     query =
       from player in Player,
-      where: player.id == ^id,
-      left_join: losses in assoc(player, :losses),
-      preload: [losses: losses]
+        where: player.id == ^id,
+        left_join: losses in assoc(player, :losses),
+        preload: [losses: losses]
+
     Repo.one(query)
   end
 end

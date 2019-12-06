@@ -1,43 +1,23 @@
-defmodule Agot.Analytica do
-  alias Agot.Cache
-  alias Agot.Tournaments
+defmodule Agot.Tjp.Analytica do
+  alias Agot.Decks
   alias Agot.Games
   alias Agot.Players
-  alias Agot.Decks
-  alias Agot.Misc
+  alias Agot.Tournaments
 
-  def update_all_decks_three_months do
-    Decks.list_decks()
-    |> Enum.each(fn x -> update_single_deck_three_months(x.faction, x.agenda) end)
-  end
+  alias Agot.Tjp.Cache
 
-  def update_single_deck_three_months(faction, agenda) do
-    games = Games.list_games_for_deck_last_n(faction, agenda, 90)
+  def process_new_games(new_games) do
+    Enum.each(new_games, fn x -> check_if_excluded(x) end)
 
-    wins =
-      games
-      |> Enum.count(fn x -> x.winner_faction == faction and x.winner_agenda == agenda end)
-
-    losses = length(games) - wins
-    Decks.update_ninety(faction, agenda, %{wins: wins, losses: losses})
-  end
-
-  def process_all_games(data, page_number, page_length) do
-    Enum.each(data, fn x -> check_for_exclude(x) end)
-
-    exclude_map =
-      :ets.match(:exclude_cache, {:"_", :"$2"})
-      |> List.flatten()
-
-    exclude_list =
-      exclude_map
+    excluded_list =
+      :ets.match(:excluded_cache, {:"$1", :"$2"})
+      |> Enum.map(&Enum.at(&1, 1))
       |> Enum.map(fn x -> x.id end)
 
-    Enum.each(data, fn x -> clean_and_process_game(x, exclude_list) end)
-    Misc.update_position(page_number, page_length)
+    Enum.each(new_games, fn x -> clean_and_process_game(x, excluded_list) end)
   end
 
-  def check_for_exclude(game) do
+  def check_if_excluded(game) do
     name = game["tournament_name"]
     id = game["tournament_id"]
 
@@ -55,9 +35,9 @@ defmodule Agot.Analytica do
         game["p2_agenda"] == "Treaty" or
         game["p2_agenda"] == "Protectors of the Realm" or
           game["p2_agenda"] == "The Power of Wealth" ->
-        if Cache.get_exclude(id) == nil do
+        if Cache.get_excluded(id) == nil do
           excluded = Tournaments.get_excluded(id, name)
-          Cache.put_exclude(excluded.id, %{name: excluded.name, id: excluded.id})
+          Cache.put_excluded(excluded.id, %{name: excluded.name, id: excluded.id})
         end
 
       true ->
@@ -65,17 +45,17 @@ defmodule Agot.Analytica do
     end
   end
 
-  def clean_and_process_game(game, exclude_list \\ []) do
-    if Enum.member?(exclude_list, game["tournament_id"]) do
+  def clean_and_process_game(game, excluded_list \\ []) do
+    if Enum.member?(excluded_list, game["tournament_id"]) do
       nil
     else
-      temp =
+      cleaned_game =
         strings_to_atoms(game)
         |> check_game()
 
       cond do
-        temp === nil -> nil
-        true -> process_game(temp)
+        cleaned_game === nil -> nil
+        true -> process_game(cleaned_game)
       end
     end
   end
@@ -97,7 +77,7 @@ defmodule Agot.Analytica do
         nil
 
       game.p1_points > game.p2_points ->
-        _game = %{
+        %{
           winner: %{
             id: game.p1_id,
             name: game.p1_name,
@@ -119,7 +99,7 @@ defmodule Agot.Analytica do
         }
 
       game.p2_points > game.p1_points ->
-        _game = %{
+        %{
           loser: %{
             id: game.p1_id,
             name: game.p1_name,
@@ -231,11 +211,21 @@ defmodule Agot.Analytica do
     loser = Players.get_player(game.loser.id, game.loser.name)
 
     tournament =
-      Tournaments.get_tournament(
-        game.misc.tournament_id,
-        game.misc.tournament_name,
-        game.misc.tournament_date
-      )
+      case Cache.get_tournament(game.misc.tournament_id) do
+        nil ->
+          tournament =
+            Tournaments.get_tournament(
+              game.misc.tournament_id,
+              game.misc.tournament_name,
+              game.misc.tournament_date
+            )
+
+          Cache.put_tournament(game.misc.tournament_id, tournament)
+          tournament
+
+        tournament ->
+          tournament
+      end
 
     case Games.create_game(
            %{
@@ -255,7 +245,7 @@ defmodule Agot.Analytica do
         nil
 
       new_game ->
-        rate(winner, loser, game.misc.tournament_date)
+        rate(winner, loser, game.misc.id)
 
         if is_nil(new_game.winner_faction) === false and is_nil(new_game.loser_faction) === false and
              new_game.winner_faction !== "" and new_game.loser_faction !== "" do
@@ -269,70 +259,26 @@ defmodule Agot.Analytica do
     end
   end
 
-  def rate(winner, loser, date) do
-    k = 40
+  def rate(winner, loser, game_id) do
+    k = 20
     e_w = 1 / (1 + :math.pow(10, (loser.rating - winner.rating) / 400))
     e_l = 1 / (1 + :math.pow(10, (winner.rating - loser.rating) / 400))
     r_w = winner.rating + k * (1 - e_w)
     r_l = loser.rating + k * (0 - e_l)
 
-    if winner.ratings_over_time do
-      if Map.has_key?(winner.ratings_over_time, date) do
-        {_, map} = Map.get_and_update(winner.ratings_over_time, date, fn x -> {x, r_w} end)
+    Players.update_player(winner.id, %{
+      num_wins: winner.num_wins + 1,
+      num_losses: winner.num_losses,
+      rating: r_w,
+      ratings_list: winner.ratings_list ++ [%{game_id: game_id, rating: r_w}]
+    })
 
-        Players.update_player(winner.id, %{
-          num_wins: winner.num_wins + 1,
-          num_losses: winner.num_losses,
-          ratings_over_time: map,
-          rating: r_w
-        })
-      else
-        map = Map.put(winner.ratings_over_time, date, r_w)
-
-        Players.update_player(winner.id, %{
-          num_wins: winner.num_wins + 1,
-          num_losses: winner.num_losses,
-          ratings_over_time: map,
-          rating: r_w
-        })
-      end
-    else
-      Players.update_player(winner.id, %{
-        num_wins: winner.num_wins + 1,
-        num_losses: winner.num_losses,
-        ratings_over_time: %{date => r_w},
-        rating: r_w
-      })
-    end
-
-    if loser.ratings_over_time do
-      if Map.has_key?(loser.ratings_over_time, date) do
-        {_, map} = Map.get_and_update(loser.ratings_over_time, date, fn x -> {x, r_l} end)
-
-        Players.update_player(loser.id, %{
-          num_wins: loser.num_wins,
-          num_losses: loser.num_losses + 1,
-          ratings_over_time: map,
-          rating: r_l
-        })
-      else
-        map = Map.put(loser.ratings_over_time, date, r_l)
-
-        Players.update_player(loser.id, %{
-          num_wins: loser.num_wins,
-          num_losses: loser.num_losses + 1,
-          ratings_over_time: map,
-          rating: r_l
-        })
-      end
-    else
-      Players.update_player(loser.id, %{
-        num_wins: loser.num_wins,
-        num_losses: loser.num_losses + 1,
-        ratings_over_time: %{date => r_l},
-        rating: r_l
-      })
-    end
+    Players.update_player(loser.id, %{
+      num_wins: loser.num_wins,
+      num_losses: loser.num_losses + 1,
+      rating: r_l,
+      ratings_list: loser.ratings_list ++ [%{game_id: game_id, rating: r_l}]
+    })
   end
 
   def process_decks(winner_faction, winner_agenda, loser_faction, loser_agenda) do

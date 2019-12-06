@@ -1,15 +1,15 @@
-defmodule Agot.Misc.Position do
+defmodule Agot.Tjp.Position do
   use Ecto.Schema
   import Ecto.Changeset
 
   @fields [
     :page,
-    :length
+    :index
   ]
 
   schema "positions" do
     field :page, :integer
-    field :length, :integer
+    field :index, :integer
   end
 
   def changeset(position, attrs) do

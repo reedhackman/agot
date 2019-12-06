@@ -10,7 +10,8 @@ defmodule Agot.Players.Player do
     :id,
     :num_wins,
     :num_losses,
-    :rating
+    :rating,
+    :ratings_list
   ]
 
   schema "players" do
@@ -20,7 +21,7 @@ defmodule Agot.Players.Player do
     field :rating, :float
     field :percent, :float
     field :played, :integer
-    field :ratings_over_time, :map
+    field :ratings_list, {:array, :map}
 
     has_many :wins, Game, foreign_key: :winner_id, references: :id
     has_many :losses, Game, foreign_key: :loser_id, references: :id
@@ -30,6 +31,15 @@ defmodule Agot.Players.Player do
   def create_changeset(player, attrs) do
     player
     |> cast(attrs, @fields)
+    |> cast(
+      %{
+        num_wins: 0,
+        num_losses: 0,
+        rating: 1200,
+        ratings_list: []
+      },
+      @fields
+    )
     |> validate_required(@fields)
   end
 
@@ -40,10 +50,9 @@ defmodule Agot.Players.Player do
     |> cast(
       %{
         percent: attrs.num_wins / (attrs.num_losses + attrs.num_wins),
-        played: attrs.num_wins + attrs.num_losses,
-        ratings_over_time: attrs.ratings_over_time
+        played: attrs.num_wins + attrs.num_losses
       },
-      [:percent, :played, :ratings_over_time]
+      [:percent, :played]
     )
   end
 end

@@ -4,7 +4,7 @@ defmodule Agot.Repo.Migrations.CreateTables do
   def change do
     create table(:positions) do
       add :page, :integer
-      add :length, :integer
+      add :index, :integer
     end
 
     create table(:games) do
@@ -22,7 +22,7 @@ defmodule Agot.Repo.Migrations.CreateTables do
       add :percent, :float
       add :played, :integer
       add :rating, :float
-      add :ratings_over_time, :map
+      add :ratings_list, {:array, :map}
     end
 
     create table(:decks) do

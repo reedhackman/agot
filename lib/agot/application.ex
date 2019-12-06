@@ -12,10 +12,10 @@ defmodule Agot.Application do
       # Start the Ecto repository
       worker(Agot.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(AgotWeb.Endpoint, []),
+      supervisor(AgotWeb.Endpoint, [])
       # Starts a worker by calling: Agot.Worker.start_link(arg)
       # {Agot.Worker, arg},
-      worker(Agot.Overlord, [])
+      # worker(Agot.Tjp.Cache, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
