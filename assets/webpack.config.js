@@ -19,9 +19,7 @@ module.exports = (env, options) => ({
     ]
   },
   entry: {
-    app: "./js/app.js",
-    players: "./js/players.js",
-    decks: "./js/decks.js"
+    app: "./js/app.js"
   },
   output: {
     filename: "[name].js",
