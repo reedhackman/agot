@@ -31,6 +31,10 @@ defmodule Agot.Tjp.Broker do
   end
 
   def incomplete_to_complete(game) do
-    IO.inspect(game)
+    with {:ok} <- Analytica.clean_and_process_game(game),
+         _game <-
+           Games.get_game(game["game_id"]) do
+      Games.delete_incomplete(game["game_id"])
+    end
   end
 end

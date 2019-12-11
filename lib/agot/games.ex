@@ -83,4 +83,12 @@ defmodule Agot.Games do
         nil
     end
   end
+
+  def get_game(id) do
+    query =
+      from game in Game,
+        where: game.id == ^id
+
+    Repo.one!(query)
+  end
 end

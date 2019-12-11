@@ -58,6 +58,8 @@ defmodule Agot.Tjp.Analytica do
         true -> process_game(cleaned_game)
       end
     end
+
+    {:ok}
   end
 
   def check_game(game) do
