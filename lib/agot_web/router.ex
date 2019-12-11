@@ -29,8 +29,5 @@ defmodule AgotWeb.Router do
     get "/players", ApiController, :all_players
     get "/players/:id", ApiController, :specific_player
     get "/games", ApiController, :all_games
-    get "/games/page/:page", ApiController, :games_by_page
-    get "/games/date/:start/:end", ApiController, :games_over_range
-    get "/decks/:faction/:agenda", ApiController, :games_for_deck
   end
 end
