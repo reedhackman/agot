@@ -13,12 +13,6 @@ defmodule AgotWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", AgotWeb do
-    pipe_through :browser
-
-    get "/*path", PageController, :index
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", AgotWeb do
   #   pipe_through :api
@@ -28,6 +22,13 @@ defmodule AgotWeb.Router do
 
     get "/players", ApiController, :all_players
     get "/players/:id", ApiController, :specific_player
+
     get "/games", ApiController, :all_games
+  end
+
+  scope "/", AgotWeb do
+    pipe_through :browser
+
+    get "/*path", PageController, :index
   end
 end

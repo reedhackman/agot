@@ -19,4 +19,12 @@ defmodule AgotWeb.ApiController do
     |> put_status(200)
     |> json(player)
   end
+
+  def all_games(conn, _params) do
+    games = Games.list_games()
+
+    conn
+    |> put_status(200)
+    |> json(games)
+  end
 end

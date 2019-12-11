@@ -23,12 +23,8 @@ defmodule Agot.Games do
     |> Repo.delete()
   end
 
-  def list_all_incomplete do
+  def list_incomplete do
     Repo.all(Incomplete)
-  end
-
-  def list_all_games do
-    Repo.all(Game)
   end
 
   def list_games do
@@ -86,37 +82,5 @@ defmodule Agot.Games do
       _game ->
         nil
     end
-  end
-
-  def list_games_for_interval(start_date, end_date) do
-    query =
-      from game in Game,
-        where:
-          game.date >= ^start_date and game.date <= ^end_date and not is_nil(game.winner_faction) and
-            not is_nil(game.loser_faction) and not is_nil(game.winner_agenda) and
-            not is_nil(game.loser_agenda)
-
-    Repo.all(query)
-  end
-
-  def list_games_for_deck(faction, agenda) do
-    query =
-      from game in Game,
-        where:
-          (game.winner_faction == ^faction and game.winner_agenda == ^agenda) or
-            (game.loser_faction == ^faction and game.loser_agenda == ^agenda)
-
-    Repo.all(query)
-  end
-
-  def list_games_for_deck_last_n(faction, agenda, days) do
-    query =
-      from game in Game,
-        where:
-          ((game.winner_faction == ^faction and game.winner_agenda == ^agenda) or
-             (game.loser_faction == ^faction and game.loser_agenda == ^agenda)) and
-            game.date > ago(^days, "day")
-
-    Repo.all(query)
   end
 end
